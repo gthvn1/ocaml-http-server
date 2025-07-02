@@ -1,6 +1,7 @@
 (* https://mirage.github.io/ocaml-conduit/conduit-lwt-unix/Conduit_lwt_unix/index.html *)
 
 let port = 8000
+let static_index = "./static/index.html"
 
 (* Create a socket listening on given port. *)
 let sock : Conduit_lwt_unix.tcp_config = `Port port
@@ -28,7 +29,12 @@ let server_handler _conn req _body =
         (* We want to keep upper/lower case from path so extract it. *)
         let name = String.sub path 1 3 in
         `String (Printf.sprintf "Hello, %s!" name)
-    | _ -> `String "Hello, Sailor!"
+    | _ ->
+        (* By default load index.html *)
+        let in_file = open_in static_index in
+        let sz = in_channel_length in_file in
+        let content = really_input_string in_file sz in
+        `String content
   in
   Cohttp_lwt_unix.Server.respond ~status:`OK ~body ()
 
