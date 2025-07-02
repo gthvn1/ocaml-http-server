@@ -27,7 +27,7 @@ let server_handler _conn req _body =
     | "/joe" ->
         (* We want to keep upper/lower case from path so extract it. *)
         let name = String.sub path 1 3 in
-        `String (Printf.sprintf "Hello %s!" name)
+        `String (Printf.sprintf "Hello, %s!" name)
     | _ -> `String "Hello, Sailor!"
   in
   Cohttp_lwt_unix.Server.respond ~status:`OK ~body ()
