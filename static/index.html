@@ -6,31 +6,59 @@
     <style>
       body {
         margin: 0;
+        padding: 0;
         height: 100vh;
+        background: #f9f9f9;
         display: flex;
+        flex-direction: column;
         justify-content: center;
         align-items: center;
-        background: #282c34;
-        color: #61dafb;
         font-family: sans-serif;
-        font-size: 3rem;
-        animation: fadeIn 2s ease-out;
+        color: #333;
       }
 
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-          transform: translateY(20px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
+      h1 {
+        margin-bottom: 20px;
+        font-size: 2.5rem;
+      }
+
+      button {
+        padding: 10px 20px;
+        font-size: 1rem;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: white;
+        cursor: pointer;
+        transition: background-color 0.2s;
+      }
+
+      button:hover {
+        background-color: #f0f0f0;
       }
     </style>
   </head>
   <body>
-    hello, world!
+    <h1 id="hdr">Hello, Sailor!</h1>
+    <button id="btn">Click me?</button>
+
+    <script>
+      document.getElementById("btn").addEventListener("click", () => { 
+        fetch("/clicked", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ message: "Button clicked!" })
+        })
+        .then(response => response.text())
+        .then(text => {
+          document.getElementById('hdr').textContent = text;
+          console.log("Server responded:", text)
+        })
+        .catch(err => console.error("Error:", err));
+      })
+    </script>
+
   </body>
 </html>
 

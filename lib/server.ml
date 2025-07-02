@@ -29,6 +29,7 @@ let server_handler _conn req _body =
         (* We want to keep upper/lower case from path so extract it. *)
         let name = String.sub path 1 3 in
         `String (Printf.sprintf "Hello, %s!" name)
+    | "/clicked" -> `String "Whoa, you actually clicked it!"
     | _ ->
         (* By default load index.html *)
         let in_file = open_in static_index in
