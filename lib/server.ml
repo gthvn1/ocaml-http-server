@@ -2,12 +2,25 @@
 
 let port = 8000
 let static_index = "./static/index.html"
+let static_css = "./static/style.css"
+let static_favicon = "./static/favicon.ico"
 
 (* Create a socket listening on given port. *)
 let sock : Conduit_lwt_unix.tcp_config = `Port port
 
 (* Listen on the specified TCPv4 port. *)
 let listen : Conduit_lwt_unix.server = `TCP sock
+
+let read_file name : string =
+  let fname =
+    match name with
+    | "css" -> static_css
+    | "favicon" -> static_favicon
+    | _ -> static_index
+  in
+  let in_file = open_in fname in
+  let sz = in_channel_length in_file in
+  really_input_string in_file sz
 
 let server_handler _conn req _body =
   let open Cohttp_lwt_unix in
@@ -30,12 +43,9 @@ let server_handler _conn req _body =
         let name = String.sub path 1 3 in
         `String (Printf.sprintf "Hello, %s!" name)
     | "/clicked" -> `String "Whoa, you actually clicked it!"
-    | _ ->
-        (* By default load index.html *)
-        let in_file = open_in static_index in
-        let sz = in_channel_length in_file in
-        let content = really_input_string in_file sz in
-        `String content
+    | "/favicon.ico" -> `String (read_file "favicon")
+    | "/style.css" -> `String (read_file "css")
+    | _ -> `String (read_file "_index")
   in
   Cohttp_lwt_unix.Server.respond ~status:`OK ~body ()
 
