@@ -6,40 +6,40 @@
     <link rel="stylesheet" href="style.css">
   </head>
   <body>
-    <h1 id="hdr">Hello, Sailor!</h1>
-    <button id="btn">Click me?</button>
+    <h1 id="hdr">Lox REPL!</h1>
 
-    <label for="blackboard">Lox Blackboard</label>
-    <textarea id="blackboard" name="bloackboard">Type your lox code here</textarea>
+    <div class="container">
+      <div class="left">
+        <div class="section">
+          <label for="blackboard">Blackboard</label>
+          <textarea id="blackboard" name="blackboard">Type your lox code here</textarea>
+        </div>
+        <div class="section">
+          <label for="output">Output</label>
+          <textarea id="output" name="output">Results will appear here</textarea>
+        </div>
+      </div>
+      <div class="right">
+          <label for="debug">Debug</label>
+          <textarea id="debug" name="debug">Debug info</textarea>
+      </div>
+    </div>
+
 
     <script>
-      document.getElementById("btn").addEventListener("click", () => { 
-        fetch("/clicked", {
+      var bboard = document.getElementById("blackboard");
+      var output = document.getElementById("output");
+      
+      bboard.addEventListener("input", () => {
+        fetch("/rot13", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({ message: "Button clicked!" })
-        })
+          headers: {"Content-Type": "text/plain"},
+          body: bboard.value })
         .then(response => response.text())
         .then(text => {
-          document.getElementById('hdr').textContent = text;
-          console.log("Server responded:", text)
+          output.value = text;
+          console.log("Server responded:", text);
         })
-        .catch(err => console.error("Error:", err));
-      })
-
-      var textarea = document.getElementById("blackboard");
-      textarea.addEventListener("input", () => {
-        fetch("/lox", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({ message: textarea.value })
-        })
-        .then(response => response.text())
-        .then(text => console.log("Server responded:", text))
         .catch(err => console.error("Error:", err));
       })
     </script>
