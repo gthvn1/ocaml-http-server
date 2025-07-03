@@ -1,6 +1,7 @@
 # An Interactive Coding Toy in OCaml
 
-Our project has not really a name for now... That's why OCaml HTTP server.
+Project Name: TBD — For now, just “OCaml HTTP Server”!
+
 The idea is to have some fun with OCaml, and since I want to build something interactive, why not create a small server
 that serves a page with three panels? The user can enter code in one panel, and the other two will be used to display
 output and any errors.
