@@ -45,7 +45,7 @@ let server_handler _conn req body =
         (* We want to keep upper/lower case from path so extract it. *)
         let name = String.sub path 1 3 in
         `String (Printf.sprintf "Hello, %s!" name)
-    | "/rot13" -> `String "Not yet implemented"
+    | "/rot13" -> `String (Rot13.encode body_str)
     | "/favicon.ico" -> `String (read_file "favicon")
     | "/style.css" -> `String (read_file "css")
     | _ -> `String (read_file "_index")
