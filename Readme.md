@@ -21,3 +21,4 @@ ROT13 🙂... Everything is wired up — now it's just a matter of improving and
 ❯ curl http://localhost:8000/jOe
 Hello jOe!
 ```
+- But to truly immerse yourself in the experience open it in your browser 🌈
