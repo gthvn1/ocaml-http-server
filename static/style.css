@@ -29,3 +29,33 @@ button {
 button:hover {
   background-color: #f0f0f0;
 }
+
+label {
+  display: inline-block;
+  padding: 10px 20px;
+  font-family: 'Georgia', serif;
+  font-weight: bold;
+  color: #4b2e05; /* dark brown */
+  background: linear-gradient(145deg, #a9744a, #6f4a1e);
+  border: 2px solid #5c3a0a;
+  border-radius: 8px;
+  box-shadow: inset 0 3px 5px rgba(255, 255, 255, 0.3),
+              0 3px 6px rgba(0, 0, 0, 0.4);
+  text-shadow: 1px 1px 0 #3b2e01;
+  user-select: none;
+  cursor: default;
+}
+
+textarea {
+  width: 600px;
+  height: 300px;
+  background-color: #1e1e1e; /* chalkboard black */
+  color: #f8f8f2; /* chalk white */
+  font-family: 'Schoolbell', cursive;
+  font-size: 1.5rem;
+  padding: 20px;
+  border: 5px solid #555;
+  box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.1);
+  outline: none;
+  resize: none;
+}

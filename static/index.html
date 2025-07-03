@@ -9,6 +9,9 @@
     <h1 id="hdr">Hello, Sailor!</h1>
     <button id="btn">Click me?</button>
 
+    <label for="blackboard">Lox Blackboard</label>
+    <textarea id="blackboard" name="bloackboard">Type your lox code here</textarea>
+
     <script>
       document.getElementById("btn").addEventListener("click", () => { 
         fetch("/clicked", {
@@ -23,6 +26,20 @@
           document.getElementById('hdr').textContent = text;
           console.log("Server responded:", text)
         })
+        .catch(err => console.error("Error:", err));
+      })
+
+      var textarea = document.getElementById("blackboard");
+      textarea.addEventListener("input", () => {
+        fetch("/lox", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ message: textarea.value })
+        })
+        .then(response => response.text())
+        .then(text => console.log("Server responded:", text))
         .catch(err => console.error("Error:", err));
       })
     </script>
