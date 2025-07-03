@@ -1,5 +1,7 @@
 # An Interactive Coding Toy in OCaml
 
+<img src="static/ocaml_chalkboard.png" alt="OCaml Interactive Coding" width="200" height="200" align="left"/>
+
 Project Name: TBD — For now, just “OCaml HTTP Server”!
 
 The idea is to have some fun with OCaml, and since I want to build something interactive, why not create a small server
