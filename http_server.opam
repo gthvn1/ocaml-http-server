@@ -12,6 +12,8 @@ bug-reports: "https://github.com/username/reponame/issues"
 depends: [
   "dune" {>= "3.19"}
   "ocaml"
+  "cohttp-lwt-unix"
+  "conduit-lwt"
   "odoc" {with-doc}
 ]
 build: [
