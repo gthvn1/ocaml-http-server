@@ -1,2 +1,2 @@
 let tokenize = Scanner.tokenize
-let tokens_to_string = Scanner.tokens_to_string
+let tokens_to_string = Token.tokens_to_string

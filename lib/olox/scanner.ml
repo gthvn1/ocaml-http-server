@@ -1,24 +1,10 @@
 open Astring
 
-type token_type = LeftParen | RightParen
-
-let token_type_to_string = function
-  | LeftParen -> "LeftParen"
-  | RightParen -> "RightParen"
-
-type token = {
-  token_type : token_type;
-  lexeme : string;
-  literal : string;
-  line : int;
+type tokenizer = {
+  source : string;
+  tokens : Token.t list;
+  errors : string list;
 }
-
-let token_to_string (tok : token) : string =
-  Printf.sprintf "%s %s %s"
-    (token_type_to_string tok.token_type)
-    tok.lexeme tok.literal
-
-type tokenizer = { source : string; tokens : token list; errors : string list }
 
 let rec scan_tokens (tok : tokenizer) : tokenizer =
   Printf.printf ">> current string: %s\n%!" tok.source;
@@ -43,6 +29,3 @@ let rec scan_tokens (tok : tokenizer) : tokenizer =
 
 let tokenize (str : string) : tokenizer =
   { source = str; tokens = []; errors = [] } |> scan_tokens
-
-let tokens_to_string (toks : token list) : string =
-  toks |> List.map token_to_string |> String.concat ~sep:"\n"
