@@ -14,7 +14,7 @@ let sock : Conduit_lwt_unix.tcp_config = `Port port
 (* Listen on the specified TCPv4 port. *)
 let listen : Conduit_lwt_unix.server = `TCP sock
 
-let read_file (ft: file_type) : string =
+let read_file (ft : file_type) : string =
   let fname =
     match ft with
     | Css -> static_css
@@ -56,9 +56,7 @@ let server_handler _conn req body =
   Cohttp_lwt_unix.Server.respond ~status:`OK ~body:answer ()
 
 let start_server =
-  let server =
-    Cohttp_lwt_unix.Server.(
-      make ~callback:server_handler () |> create ~mode:listen)
-  in
   print_endline ("Listenning on port " ^ string_of_int port);
-  ignore (Lwt_main.run server)
+  Cohttp_lwt_unix.Server.(
+    make ~callback:server_handler () |> create ~mode:listen)
+  |> Lwt_main.run
