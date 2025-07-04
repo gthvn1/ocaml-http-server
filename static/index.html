@@ -12,7 +12,7 @@
       <div class="left">
         <div class="section">
           <label for="blackboard">Blackboard</label>
-          <textarea id="blackboard" name="blackboard">Type your lox code here</textarea>
+          <textarea id="blackboard" name="blackboard">Type text here</textarea>
         </div>
         <div class="section">
           <label for="output">Output</label>
@@ -29,6 +29,7 @@
     <script>
       var bboard = document.getElementById("blackboard");
       var output = document.getElementById("output");
+      var debug = document.getElementById("debug");
       
       bboard.addEventListener("input", () => {
         fetch("/rot13", {
@@ -40,7 +41,10 @@
           output.value = text;
           console.log("Server responded:", text);
         })
-        .catch(err => console.error("Error:", err));
+        .catch(err => {
+          debug.value = err;
+          console.error("Error:", err)
+        });
       })
     </script>
 
