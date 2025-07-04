@@ -11,6 +11,9 @@ output and any errors.
 For now, our OCaml server can serve a basic *index.html* page and handle a simple transformation of input text using
 ROT13 🙂... Everything is wired up — now it's just a matter of improving and expanding it!
 
+Next steps: we'll follow the [Crafting Interpreters](https://craftinginterpreters.com/) book to parse and evaluate Lox
+code from the input panel.
+
 # Tricks
 
 - To get doc in my terminal I'm using: `w3m "$(odig cache path)/html/index.html"`
