@@ -48,7 +48,22 @@ let server_handler _conn req body =
         (* We want to keep upper/lower case from path so extract it. *)
         let name = String.sub path 1 3 in
         `String (Printf.sprintf "Hello, %s!" name)
-    | "/rot13" -> `String (Rot13.encode body_str)
+    | "/rot13" ->
+        let resp =
+          if String.length body_str = 0 then
+            `Assoc
+              [
+                ("status", `Bool false);
+                ("message", `String "Cannot apply rot13 on empty string");
+              ]
+          else
+            `Assoc
+              [
+                ("status", `Bool true);
+                ("message", `String (Rot13.encode body_str));
+              ]
+        in
+        `String (Yojson.Safe.to_string resp)
     | "/favicon.ico" -> `String (read_file Icon)
     | "/style.css" -> `String (read_file Css)
     | _ -> `String (read_file Index)

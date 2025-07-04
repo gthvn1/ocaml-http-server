@@ -36,10 +36,16 @@
           method: "POST",
           headers: {"Content-Type": "text/plain"},
           body: bboard.value })
-        .then(response => response.text())
-        .then(text => {
-          output.value = text;
-          console.log("Server responded:", text);
+        .then(response => response.json())
+        .then(json => {
+          output.value = json.message;
+          if (json.status) {
+            debug.value = "";
+            console.log("Server responded:", json.message);
+          } else {
+            debug.value = json.message;
+            console.log("Got an error:", json.message);
+          }
         })
         .catch(err => {
           debug.value = err;
