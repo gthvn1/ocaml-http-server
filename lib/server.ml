@@ -53,8 +53,7 @@ let server_handler _conn req body =
           if String.length body_str = 0 then
             `Assoc
               [
-                ("status", `Bool false);
-                ("message", `String "Cannot apply rot13 on empty string");
+                ("status", `Bool false); ("message", `String Olox.Scanner.hello);
               ]
           else
             `Assoc
