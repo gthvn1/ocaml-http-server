@@ -32,20 +32,16 @@
       var debug = document.getElementById("debug");
       
       bboard.addEventListener("input", () => {
-        fetch("/rot13", {
+        fetch("/olox", {
           method: "POST",
           headers: {"Content-Type": "text/plain"},
           body: bboard.value })
         .then(response => response.json())
         .then(json => {
-          output.value = json.message;
-          if (json.status) {
-            debug.value = "";
-            console.log("Server responded:", json.message);
-          } else {
-            debug.value = json.message;
-            console.log("Got an error:", json.message);
-          }
+          output.value = json.response;
+          debug.value = json.errors;
+          console.log("Response:", json.response);
+          console.log("Errors:", json.errors);
         })
         .catch(err => {
           debug.value = err;

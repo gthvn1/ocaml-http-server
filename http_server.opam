@@ -15,6 +15,7 @@ depends: [
   "cohttp-lwt-unix"
   "conduit-lwt"
   "yojson"
+  "astring"
   "odoc" {with-doc}
 ]
 build: [

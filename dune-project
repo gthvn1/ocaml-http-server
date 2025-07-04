@@ -19,7 +19,7 @@
  (name http_server)
  (synopsis "A short synopsis")
  (description "A longer description")
- (depends ocaml cohttp-lwt-unix conduit-lwt yojson)
+ (depends ocaml cohttp-lwt-unix conduit-lwt yojson astring)
  (tags
   ("add topics" "to describe" your project)))
 

@@ -48,19 +48,14 @@ let server_handler _conn req body =
         (* We want to keep upper/lower case from path so extract it. *)
         let name = String.sub path 1 3 in
         `String (Printf.sprintf "Hello, %s!" name)
-    | "/rot13" ->
+    | "/olox" ->
+        let toks = Olox.tokenize body_str in
         let resp =
-          if String.length body_str = 0 then
-            `Assoc
-              [
-                ("status", `Bool false); ("message", `String Olox.Scanner.hello);
-              ]
-          else
-            `Assoc
-              [
-                ("status", `Bool true);
-                ("message", `String (Rot13.encode body_str));
-              ]
+          `Assoc
+            [
+              ("response", `String (Olox.tokens_to_string toks.tokens));
+              ("errors", `String (String.concat "\n" toks.errors));
+            ]
         in
         `String (Yojson.Safe.to_string resp)
     | "/favicon.ico" -> `String (read_file Icon)
