@@ -25,3 +25,5 @@ code from the input panel.
 Hello jOe!
 ```
 - But to truly immerse yourself in the experience open it in your browser 🤸
+
+<img src="static/screenshot1.png" alt="OCaml Interactive Coding Screenshot" width="400" align="left"/>
