@@ -1,4 +1,4 @@
 (executable
- (public_name http_server)
+ (public_name olox_server)
  (name main)
- (libraries http_server))
+ (libraries olox_libs))
