@@ -31,7 +31,7 @@ and skip_char tokizer rest = scan_tokens { tokizer with source = rest }
 and return_tokenizer tokizer =
   {
     tokizer with
-    tokens = List.rev tokizer.tokens;
+    tokens = List.rev (Token.eof_token tokizer.line :: tokizer.tokens);
     errors = List.rev tokizer.errors;
   }
 
@@ -43,6 +43,15 @@ and scan_tokens (tok : tokenizer) : tokenizer =
   | Some c, rest when is_whitespace c -> skip_char tok rest
   | Some '(', rest -> Token.of_char '(' tok.line |> add_token tok rest
   | Some ')', rest -> Token.of_char ')' tok.line |> add_token tok rest
+  | Some '{', rest -> Token.of_char '{' tok.line |> add_token tok rest
+  | Some '}', rest -> Token.of_char '}' tok.line |> add_token tok rest
+  | Some ',', rest -> Token.of_char ',' tok.line |> add_token tok rest
+  | Some '.', rest -> Token.of_char '.' tok.line |> add_token tok rest
+  | Some '-', rest -> Token.of_char '-' tok.line |> add_token tok rest
+  | Some '+', rest -> Token.of_char '+' tok.line |> add_token tok rest
+  | Some ';', rest -> Token.of_char ';' tok.line |> add_token tok rest
+  | Some '/', rest -> Token.of_char '/' tok.line |> add_token tok rest
+  | Some '*', rest -> Token.of_char '*' tok.line |> add_token tok rest
   | Some c, rest ->
       "Unkown character <" ^ Astring.String.of_char c ^ "> at "
       ^ Astring.String.of_int tok.line
