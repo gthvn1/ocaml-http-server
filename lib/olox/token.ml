@@ -11,6 +11,12 @@ type t = {
   line : int;
 }
 
+let of_char (c : char) (line : int) : t =
+  match c with
+  | '(' -> { token_type = LeftParen; lexeme = "("; literal = "nil"; line }
+  | ')' -> { token_type = RightParen; lexeme = ")"; literal = "nil"; line }
+  | _ -> failwith (Printf.sprintf "Cannot convert %c to a token" c)
+
 let token_to_string (tok : t) : string =
   Printf.sprintf "%s %s %s"
     (token_type_to_string tok.token_type)
