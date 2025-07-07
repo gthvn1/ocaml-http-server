@@ -31,6 +31,13 @@ and add_token_from_string s tokizer rest =
 
 and skip_char tokizer rest = scan_tokens { tokizer with source = rest }
 
+and skip_until_eol tokizer =
+  match read_first_char tokizer.source with
+  | None, _ -> return_tokenizer tokizer
+  | Some '\n', rest ->
+      scan_tokens { tokizer with source = rest; line = tokizer.line + 1 }
+  | Some _, rest -> skip_until_eol { tokizer with source = rest }
+
 and return_tokenizer tokizer =
   {
     tokizer with
@@ -53,8 +60,11 @@ and scan_tokens (tok : tokenizer) : tokenizer =
   | Some '-', rest -> add_token_from_string "-" tok rest
   | Some '+', rest -> add_token_from_string "+" tok rest
   | Some ';', rest -> add_token_from_string ";" tok rest
-  | Some '/', rest -> add_token_from_string "/" tok rest
   | Some '*', rest -> add_token_from_string "*" tok rest
+  | Some '/', rest -> (
+      match read_first_char rest with
+      | Some '/', rest' -> skip_until_eol { tok with source = rest' }
+      | _ -> add_token_from_string "/" tok rest)
   | Some '!', rest -> (
       match read_first_char rest with
       | Some '=', rest' -> add_token_from_string "!=" tok rest'
