@@ -26,6 +26,9 @@ and add_error tokizer rest err =
 and add_line tokizer rest =
   scan_tokens { tokizer with source = rest; line = tokizer.line + 1 }
 
+and add_token_from_string s tokizer rest =
+  Token.of_string s tokizer.line |> add_token tokizer rest
+
 and skip_char tokizer rest = scan_tokens { tokizer with source = rest }
 
 and return_tokenizer tokizer =
@@ -41,17 +44,33 @@ and scan_tokens (tok : tokenizer) : tokenizer =
   | None, _ -> return_tokenizer tok
   | Some '\n', rest -> add_line tok rest
   | Some c, rest when is_whitespace c -> skip_char tok rest
-  | Some '(', rest -> Token.of_char '(' tok.line |> add_token tok rest
-  | Some ')', rest -> Token.of_char ')' tok.line |> add_token tok rest
-  | Some '{', rest -> Token.of_char '{' tok.line |> add_token tok rest
-  | Some '}', rest -> Token.of_char '}' tok.line |> add_token tok rest
-  | Some ',', rest -> Token.of_char ',' tok.line |> add_token tok rest
-  | Some '.', rest -> Token.of_char '.' tok.line |> add_token tok rest
-  | Some '-', rest -> Token.of_char '-' tok.line |> add_token tok rest
-  | Some '+', rest -> Token.of_char '+' tok.line |> add_token tok rest
-  | Some ';', rest -> Token.of_char ';' tok.line |> add_token tok rest
-  | Some '/', rest -> Token.of_char '/' tok.line |> add_token tok rest
-  | Some '*', rest -> Token.of_char '*' tok.line |> add_token tok rest
+  | Some '(', rest -> add_token_from_string "(" tok rest
+  | Some ')', rest -> add_token_from_string ")" tok rest
+  | Some '{', rest -> add_token_from_string "{" tok rest
+  | Some '}', rest -> add_token_from_string "}" tok rest
+  | Some ',', rest -> add_token_from_string "," tok rest
+  | Some '.', rest -> add_token_from_string "." tok rest
+  | Some '-', rest -> add_token_from_string "-" tok rest
+  | Some '+', rest -> add_token_from_string "+" tok rest
+  | Some ';', rest -> add_token_from_string ";" tok rest
+  | Some '/', rest -> add_token_from_string "/" tok rest
+  | Some '*', rest -> add_token_from_string "*" tok rest
+  | Some '!', rest -> (
+      match read_first_char rest with
+      | Some '=', rest' -> add_token_from_string "!=" tok rest'
+      | _ -> add_token_from_string "!" tok rest)
+  | Some '=', rest -> (
+      match read_first_char rest with
+      | Some '=', rest' -> add_token_from_string "==" tok rest'
+      | _ -> add_token_from_string "=" tok rest)
+  | Some '>', rest -> (
+      match read_first_char rest with
+      | Some '=', rest' -> add_token_from_string ">=" tok rest'
+      | _ -> add_token_from_string ">" tok rest)
+  | Some '<', rest -> (
+      match read_first_char rest with
+      | Some '=', rest' -> add_token_from_string "<=" tok rest'
+      | _ -> add_token_from_string "<" tok rest)
   | Some c, rest ->
       "Unkown character <" ^ Astring.String.of_char c ^ "> at "
       ^ Astring.String.of_int tok.line

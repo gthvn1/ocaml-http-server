@@ -11,6 +11,15 @@ type token_type =
   | Semicolon
   | Slash
   | Star
+  | (* One or two character tokens. *)
+    Bang
+  | BangEqual
+  | Equal
+  | EqualEqual
+  | Greater
+  | GreaterEqual
+  | Less
+  | LessEqual
   | Eof
 
 let token_type_to_string = function
@@ -25,6 +34,14 @@ let token_type_to_string = function
   | Semicolon -> "Semicolon"
   | Slash -> "Slash"
   | Star -> "Star"
+  | Bang -> "Bang"
+  | BangEqual -> "BangEqual"
+  | Equal -> "Equal"
+  | EqualEqual -> "EqualEqual"
+  | Greater -> "Greater"
+  | GreaterEqual -> "GreaterEqual"
+  | Less -> "Less"
+  | LessEqual -> "LessEqual"
   | Eof -> "Eof"
 
 type t = {
@@ -34,22 +51,32 @@ type t = {
   line : int;
 }
 
-let eof_token line = { token_type = Eof; lexeme = ""; literal = "nil"; line = line }
+let eof_token line = { token_type = Eof; lexeme = ""; literal = "nil"; line }
 
-let of_char (c : char) (line : int) : t =
-  match c with
-  | '(' -> { token_type = LeftParen; lexeme = "("; literal = "nil"; line }
-  | ')' -> { token_type = RightParen; lexeme = ")"; literal = "nil"; line }
-  | '{' -> { token_type = LeftBrace; lexeme = "{"; literal = "nil"; line }
-  | '}' -> { token_type = RightBrace; lexeme = "}"; literal = "nil"; line }
-  | ',' -> { token_type = Comma; lexeme = ","; literal = "nil"; line }
-  | '.' -> { token_type = Dot; lexeme = "."; literal = "nil"; line }
-  | '-' -> { token_type = Minus; lexeme = "-"; literal = "nil"; line }
-  | '+' -> { token_type = Plus; lexeme = "+"; literal = "nil"; line }
-  | ';' -> { token_type = Semicolon; lexeme = ";"; literal = "nil"; line }
-  | '/' -> { token_type = Slash; lexeme = "/"; literal = "nil"; line }
-  | '*' -> { token_type = Star; lexeme = "*"; literal = "nil"; line }
-  | _ -> failwith (Printf.sprintf "Cannot convert %c to a token" c)
+let of_string (s : string) (line : int) : t =
+  (* Just for Eof as default token type for now *)
+  let token = { token_type = Eof; lexeme = s; literal = "nil"; line } in
+  match s with
+  | "(" -> { token with token_type = LeftParen }
+  | ")" -> { token with token_type = RightParen }
+  | "{" -> { token with token_type = LeftBrace }
+  | "}" -> { token with token_type = RightBrace }
+  | "," -> { token with token_type = Comma }
+  | "." -> { token with token_type = Dot }
+  | "-" -> { token with token_type = Minus }
+  | "+" -> { token with token_type = Plus }
+  | ";" -> { token with token_type = Semicolon }
+  | "/" -> { token with token_type = Slash }
+  | "*" -> { token with token_type = Star }
+  | "!" -> { token with token_type = Bang }
+  | "!=" -> { token with token_type = BangEqual }
+  | "=" -> { token with token_type = Equal }
+  | "==" -> { token with token_type = EqualEqual }
+  | ">" -> { token with token_type = Greater }
+  | ">=" -> { token with token_type = GreaterEqual }
+  | "<" -> { token with token_type = Less }
+  | "<=" -> { token with token_type = LessEqual }
+  | _ -> failwith (Printf.sprintf "Cannot convert %s to a token" s)
 
 let token_to_string (tok : t) : string =
   Printf.sprintf "%s %s %s"
