@@ -20,6 +20,8 @@ type token_type =
   | GreaterEqual
   | Less
   | LessEqual
+  | (* *)
+    String
   | Eof
 
 let token_type_to_string = function
@@ -42,6 +44,7 @@ let token_type_to_string = function
   | GreaterEqual -> "GreaterEqual"
   | Less -> "Less"
   | LessEqual -> "LessEqual"
+  | String -> "String"
   | Eof -> "Eof"
 
 type t = {
@@ -52,6 +55,11 @@ type t = {
 }
 
 let eof_token line = { token_type = Eof; lexeme = ""; literal = "nil"; line }
+
+(* [gen_string_token] Return a token of type String for the given [str] and [line]. *)
+let gen_string_token str line =
+  let lexeme = "\"" ^ str ^ "\"" in
+  { token_type = String; literal = str; lexeme; line }
 
 let of_string (s : string) (line : int) : t =
   (* Just for Eof as default token type for now *)

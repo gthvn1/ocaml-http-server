@@ -17,6 +17,9 @@ let read_first_char (str : string) : char option * string =
 (* \n has its own case because we update a line *)
 let is_whitespace = function ' ' | '\r' | '\t' -> true | _ -> false
 
+(* prepend a character to a string *)
+let prepend_char s c = s ^ Astring.String.of_char c
+
 let rec add_token tokizer rest token =
   scan_tokens { tokizer with source = rest; tokens = token :: tokizer.tokens }
 
@@ -37,6 +40,29 @@ and skip_until_eol tokizer =
   | Some '\n', rest ->
       scan_tokens { tokizer with source = rest; line = tokizer.line + 1 }
   | Some _, rest -> skip_until_eol { tokizer with source = rest }
+
+and add_string_token tokizer str rest =
+  scan_tokens
+    {
+      tokizer with
+      source = rest;
+      tokens = Token.gen_string_token str tokizer.line :: tokizer.tokens;
+    }
+
+(* This is called when we already read a quote. So we need to find the closing
+   one. *)
+and read_string_literals tokizer str =
+  match read_first_char tokizer.source with
+  | None, _ ->
+      return_tokenizer
+        { tokizer with errors = "Unterminated string" :: tokizer.errors }
+  | Some '"', rest -> add_string_token tokizer str rest
+  | Some '\n', rest ->
+      read_string_literals
+        { tokizer with source = rest; line = tokizer.line + 1 }
+        (prepend_char str '\n')
+  | Some c, rest ->
+      read_string_literals { tokizer with source = rest } (prepend_char str c)
 
 and return_tokenizer tokizer =
   {
@@ -81,6 +107,7 @@ and scan_tokens (tok : tokenizer) : tokenizer =
       match read_first_char rest with
       | Some '=', rest' -> add_token_from_string "<=" tok rest'
       | _ -> add_token_from_string "<" tok rest)
+  | Some '"', rest -> read_string_literals { tok with source = rest } ""
   | Some c, rest ->
       "Unkown character <" ^ Astring.String.of_char c ^ "> at "
       ^ Astring.String.of_int tok.line
