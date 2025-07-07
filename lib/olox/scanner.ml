@@ -41,12 +41,12 @@ and skip_until_eol tokizer =
       scan_tokens { tokizer with source = rest; line = tokizer.line + 1 }
   | Some _, rest -> skip_until_eol { tokizer with source = rest }
 
-and add_string_token tokizer str rest =
+and gen_string_token tokizer str rest =
   scan_tokens
     {
       tokizer with
       source = rest;
-      tokens = Token.gen_string_token str tokizer.line :: tokizer.tokens;
+      tokens = Token.create_string_token str tokizer.line :: tokizer.tokens;
     }
 
 (* This is called when we already read a quote. So we need to find the closing
@@ -56,7 +56,7 @@ and read_string_literals tokizer str =
   | None, _ ->
       return_tokenizer
         { tokizer with errors = "Unterminated string" :: tokizer.errors }
-  | Some '"', rest -> add_string_token tokizer str rest
+  | Some '"', rest -> gen_string_token tokizer str rest
   | Some '\n', rest ->
       read_string_literals
         { tokizer with source = rest; line = tokizer.line + 1 }
