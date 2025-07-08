@@ -20,6 +20,9 @@ let is_whitespace = function ' ' | '\r' | '\t' -> true | _ -> false
 (* [is_digit c] returns true if c is a digit *)
 let is_digit (c : char) : bool = c >= '0' && c <= '9'
 
+let is_alpha (c : char) : bool =
+  (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c = '_'
+
 (* prepend a character to a string *)
 let prepend_char s c = s ^ Astring.String.of_char c
 
@@ -83,6 +86,16 @@ and read_number tokizer value decimal_part =
         read_number { tokizer with source = rest } (prepend_char value '.') true
   | _ -> gen_number_token tokizer value
 
+and gen_keyword_token tokizer keyword =
+  let token = Token.create_keyword_token keyword tokizer.line in
+  scan_tokens { tokizer with tokens = token :: tokizer.tokens }
+
+and read_identifier tokizer keyword =
+  match read_first_char tokizer.source with
+  | Some c, rest when is_alpha c ->
+      read_identifier { tokizer with source = rest } (prepend_char keyword c)
+  | _ -> gen_keyword_token tokizer keyword
+
 and return_tokenizer tokizer =
   {
     tokizer with
@@ -128,6 +141,7 @@ and scan_tokens (tok : tokenizer) : tokenizer =
       | _ -> add_token_from_string "<" tok rest)
   | Some '"', rest -> read_string_literals { tok with source = rest } ""
   | Some c, _ when is_digit c -> read_number tok "" false
+  | Some c, _ when is_alpha c -> read_identifier tok ""
   | Some c, rest ->
       "Unkown character <" ^ Astring.String.of_char c ^ "> at "
       ^ Astring.String.of_int tok.line

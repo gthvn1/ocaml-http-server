@@ -21,8 +21,26 @@ type token_type =
   | Less
   | LessEqual
   | (* Literals. *)
-    String
+    Identifier
+  | String
   | Number
+  | (* Keywords. *)
+    And
+  | Class
+  | Else
+  | False
+  | Fun
+  | For
+  | If
+  | Nil
+  | Or
+  | Print
+  | Return
+  | Super
+  | This
+  | True
+  | Var
+  | While
   | Eof
 
 let token_type_to_string = function
@@ -45,9 +63,45 @@ let token_type_to_string = function
   | GreaterEqual -> "GreaterEqual"
   | Less -> "Less"
   | LessEqual -> "LessEqual"
+  | Identifier -> "Identifier"
   | String -> "String"
   | Number -> "Number"
+  | And -> "And"
+  | Class -> "Class"
+  | Else -> "Else"
+  | False -> "False"
+  | Fun -> "Fun"
+  | For -> "For"
+  | If -> "If"
+  | Nil -> "Nil"
+  | Or -> "Or"
+  | Print -> "Print"
+  | Return -> "Return"
+  | Super -> "Super"
+  | This -> "This"
+  | True -> "True"
+  | Var -> "Var"
+  | While -> "While"
   | Eof -> "Eof"
+
+let to_keywords = function
+  | "and" -> And
+  | "class" -> Class
+  | "else" -> Else
+  | "false" -> False
+  | "fun" -> Fun
+  | "for" -> For
+  | "if" -> If
+  | "nil" -> Nil
+  | "or" -> Or
+  | "print" -> Print
+  | "return" -> Return
+  | "super" -> Super
+  | "this" -> This
+  | "true" -> True
+  | "var" -> Var
+  | "while" -> While
+  | _ -> Identifier
 
 type t = {
   token_type : token_type;
@@ -65,6 +119,9 @@ let create_string_token str line =
 
 let create_number_token str line =
   { token_type = Number; literal = str; lexeme = str; line }
+
+let create_keyword_token keyword line =
+  { token_type = to_keywords keyword; literal = "nil"; lexeme = keyword; line }
 
 let of_string (s : string) (line : int) : t =
   (* Just for Eof as default token type for now *)
