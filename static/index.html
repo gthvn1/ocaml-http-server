@@ -38,9 +38,10 @@
           body: bboard.value })
         .then(response => response.json())
         .then(json => {
-          output.value = json.response;
+          output.value = json.tokens;
           debug.value = json.errors;
-          console.log("Response:", json.response);
+          console.log("Tokens:", json.tokens);
+          console.log("Ast:", json.ast);
           console.log("Errors:", json.errors);
         })
         .catch(err => {
