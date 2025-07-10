@@ -14,6 +14,11 @@ ROT13 🙂... Everything is wired up — now it's just a matter of improving and
 Next steps: we'll follow the [Crafting Interpreters](https://craftinginterpreters.com/) book to parse and evaluate Lox
 code from the input panel.
 
+# Status
+
+- We are able to scan lox code
+- Starting to work on [Representing Code](https://craftinginterpreters.com/representing-code.html)
+
 # Tricks
 
 - To get doc in my terminal I'm using: `w3m "$(odig cache path)/html/index.html"`
