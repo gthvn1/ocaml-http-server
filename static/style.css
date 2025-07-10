@@ -2,21 +2,21 @@ body {
   margin: 0;
   padding: 1rem;
   height: 100vh;
-  background-color: #282828;
-  font-family: sans-serif;
-  color: #333;
+  background-color: #1e1e1e;
+  font-family: "Segoe UI", sans-serif;
+  color: #e0e0e0;
 }
 
 h1 {
   text-align: center;
-  color: #fabd2f;
+  color: #c5c5c5;
 }
 
 .container {
   display: flex;
   height: 80vh;
   margin-top: 1rem;
-  gap: 2rem; /* Add space between left and right */  
+  gap: 2rem;
 }
 
 .left, .right {
@@ -29,37 +29,40 @@ h1 {
 .section {
   flex: 1;
   display: flex;
-  flex-direction: column;  
-}
-
-#debug {
-  background-color: #2b2725;
-  color: #fb4934;
-  border-color: #cc241d;
-  font-style: italic;
-  box-shadow: 0 0 5px #cc241d;
-}
-
-#tokens, #ast {
-  background-color: #2b2725;
+  flex-direction: column;
 }
 
 label {
   margin-bottom: 0.3rem;
-  color: #d79921;
+  color: #cccccc;
+  font-weight: 600;
 }
 
 textarea {
   flex: 1;
-  background-color: #3c3836;
-  color: #ebdbb2;
-  border: 2px solid #928374;
-  border-radius: 8px;
+  background-color: #2a2a2a;
+  color: #e6e6e6;
+  border: 1px solid #444;
+  border-radius: 6px;
   padding: 1rem;
   font-family: monospace;
   font-size: 1rem;
-  box-shadow: 2px 2px 6px #1d2021;
+  box-shadow: none;
   resize: none;
   width: 90%;
   height: 90%;
+}
+
+/* Error/debug textarea */
+#debug {
+  background-color: #2d2626;
+  color: #d78a8a;
+  border-color: #a05a5a;
+  font-style: italic;
+}
+
+/* Output textareas (tokens, ast) */
+#tokens, #ast {
+  background-color: #252525;
+  color: #cccccc;
 }
