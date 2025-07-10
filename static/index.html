@@ -15,20 +15,27 @@
           <textarea id="blackboard" name="blackboard">Lox code here</textarea>
         </div>
         <div class="section">
-          <label for="output">Output</label>
-          <textarea readonly id="output" name="output">Results will appear here</textarea>
+          <label for="debug">Debug</label>
+          <textarea readonly id="debug" name="debug">Debug info</textarea>
         </div>
       </div>
       <div class="right">
-          <label for="debug">Debug</label>
-          <textarea readonly id="debug" name="debug">Debug info</textarea>
+        <div class="section">
+          <label for="tokens">Tokens</label>
+          <textarea readonly id="tokens" name="tokens">Tokens appear here</textarea>
+        </div>
+        <div class="section">
+          <label for="ast">AST</label>
+          <textarea readonly id="ast" name="ast">AST appears here</textarea>
+        </div>
       </div>
     </div>
 
 
     <script>
       var bboard = document.getElementById("blackboard");
-      var output = document.getElementById("output");
+      var tokens = document.getElementById("tokens");
+      var ast = document.getElementById("ast");
       var debug = document.getElementById("debug");
       
       bboard.addEventListener("input", () => {
@@ -38,7 +45,8 @@
           body: bboard.value })
         .then(response => response.json())
         .then(json => {
-          output.value = json.tokens;
+          tokens.value = json.tokens;
+          ast.value = json.ast;
           debug.value = json.errors;
           console.log("Tokens:", json.tokens);
           console.log("Ast:", json.ast);

@@ -32,6 +32,18 @@ h1 {
   flex-direction: column;  
 }
 
+#debug {
+  background-color: #2b2725;
+  color: #fb4934;
+  border-color: #cc241d;
+  font-style: italic;
+  box-shadow: 0 0 5px #cc241d;
+}
+
+#tokens, #ast {
+  background-color: #2b2725;
+}
+
 label {
   margin-bottom: 0.3rem;
   color: #d79921;
