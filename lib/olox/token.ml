@@ -44,45 +44,45 @@ type token_type =
   | Eof
 
 let token_type_to_string = function
-  | LeftParen -> "LeftParen"
-  | RightParen -> "RightParen"
-  | LeftBrace -> "LeftBrace"
-  | RightBrace -> "RightBrace"
-  | Comma -> "Comma"
-  | Dot -> "Dot"
-  | Minus -> "Minus"
-  | Plus -> "Plus"
-  | Semicolon -> "Semicolon"
-  | Slash -> "Slash"
-  | Star -> "Star"
-  | Bang -> "Bang"
-  | BangEqual -> "BangEqual"
-  | Equal -> "Equal"
-  | EqualEqual -> "EqualEqual"
-  | Greater -> "Greater"
-  | GreaterEqual -> "GreaterEqual"
-  | Less -> "Less"
-  | LessEqual -> "LessEqual"
-  | Identifier -> "Identifier"
-  | String -> "String"
-  | Number -> "Number"
-  | And -> "And"
-  | Class -> "Class"
-  | Else -> "Else"
-  | False -> "False"
-  | Fun -> "Fun"
-  | For -> "For"
-  | If -> "If"
-  | Nil -> "Nil"
-  | Or -> "Or"
-  | Print -> "Print"
-  | Return -> "Return"
-  | Super -> "Super"
-  | This -> "This"
-  | True -> "True"
-  | Var -> "Var"
-  | While -> "While"
-  | Eof -> "Eof"
+  | LeftParen -> "LEFT_PAREN"
+  | RightParen -> "RIGHT_PAREN"
+  | LeftBrace -> "LEFT_BRACE"
+  | RightBrace -> "RIGHT_BRACE"
+  | Comma -> "COMMA"
+  | Dot -> "DOT"
+  | Minus -> "MINUS"
+  | Plus -> "PLUS"
+  | Semicolon -> "SEMICOLON"
+  | Slash -> "SLASH"
+  | Star -> "STAR"
+  | Bang -> "BANG"
+  | BangEqual -> "BANG_EQUAL"
+  | Equal -> "EQUAL"
+  | EqualEqual -> "EQUAL_EQUAL"
+  | Greater -> "GREATER"
+  | GreaterEqual -> "GREATER_EQUAL"
+  | Less -> "LESS"
+  | LessEqual -> "LESS_EQUAL"
+  | Identifier -> "IDENTIFIER"
+  | String -> "STRING"
+  | Number -> "NUMBER"
+  | And -> "AND"
+  | Class -> "CLASS"
+  | Else -> "ELSE"
+  | False -> "FALSE"
+  | Fun -> "FUN"
+  | For -> "FOR"
+  | If -> "IF"
+  | Nil -> "NIL"
+  | Or -> "OR"
+  | Print -> "PRINT"
+  | Return -> "RETURN"
+  | Super -> "SUPER"
+  | This -> "THIS"
+  | True -> "TRUE"
+  | Var -> "VAR"
+  | While -> "WHILE"
+  | Eof -> "EOF"
 
 let to_keywords = function
   | "and" -> And
@@ -110,22 +110,48 @@ type t = {
   line : int;
 }
 
-let eof_token line = { token_type = Eof; lexeme = ""; literal = "nil"; line }
+let eof_token line = { token_type = Eof; lexeme = ""; literal = "null"; line }
 
 (* [create_string_token] returns a token of type String for the given [str] and [line]. *)
 let create_string_token str line =
   let lexeme = "\"" ^ str ^ "\"" in
   { token_type = String; literal = str; lexeme; line }
 
+(* We are expecting at least one '.' otherwise it raise an error *)
+let normalize_decimal (str : string) : string =
+  if Astring.String.exists (fun c -> c = '.') str then
+    let parts = String.split_on_char '.' str in
+    match parts with
+    | [ int_part; frac_part ] ->
+        let frac_part' =
+          let rec trim s =
+            if String.ends_with ~suffix:"0" s then
+              trim (String.sub s 0 (String.length s - 1))
+            else s
+          in
+          trim frac_part
+        in
+        if frac_part' = "" then int_part ^ ".0" else int_part ^ "." ^ frac_part'
+    | _ -> failwith ("Error: We don't expect several dot in the decimal: " ^ str)
+  else str ^ ".0"
+
 let create_number_token str line =
-  { token_type = Number; literal = str; lexeme = str; line }
+  (* literal value for an integer is represented as "42.0" (with a decimal point).
+     We also need to remove extra 0s at the end:
+     - 42.000 -> 42.0
+     - 42.340 -> 42.34
+     - 42.0   -> 42.0
+     - 42     -> 42.0
+      *)
+  let literal = normalize_decimal str in
+  { token_type = Number; literal; lexeme = str; line }
 
 let create_keyword_token keyword line =
-  { token_type = to_keywords keyword; literal = "nil"; lexeme = keyword; line }
+  { token_type = to_keywords keyword; literal = "null"; lexeme = keyword; line }
 
 let of_string (s : string) (line : int) : t =
   (* Just for Eof as default token type for now *)
-  let token = { token_type = Eof; lexeme = s; literal = "nil"; line } in
+  let token = { token_type = Eof; lexeme = s; literal = "null"; line } in
   match s with
   | "(" -> { token with token_type = LeftParen }
   | ")" -> { token with token_type = RightParen }

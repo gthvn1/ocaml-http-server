@@ -61,7 +61,12 @@ and read_string_literals tokizer str =
   match read_first_char tokizer.source with
   | None, _ ->
       return_tokenizer
-        { tokizer with errors = "Unterminated string" :: tokizer.errors }
+        {
+          tokizer with
+          errors =
+            Printf.sprintf "[line %d] Error: Unterminated string." tokizer.line
+            :: tokizer.errors;
+        }
   | Some '"', rest -> gen_string_token tokizer str rest
   | Some '\n', rest ->
       read_string_literals
@@ -92,7 +97,7 @@ and gen_keyword_token tokizer keyword =
 
 and read_identifier tokizer keyword =
   match read_first_char tokizer.source with
-  | Some c, rest when is_alpha c ->
+  | Some c, rest when is_alpha c || is_digit c ->
       read_identifier { tokizer with source = rest } (prepend_char keyword c)
   | _ -> gen_keyword_token tokizer keyword
 
@@ -104,7 +109,7 @@ and return_tokenizer tokizer =
   }
 
 and scan_tokens (tok : tokenizer) : tokenizer =
-  Printf.printf ">> current string: %s\n%!" tok.source;
+  (* Printf.eprintf ">> current string: %s%!" tok.source; *)
   match read_first_char tok.source with
   | None, _ -> return_tokenizer tok
   | Some '\n', rest -> add_line tok rest
@@ -143,9 +148,13 @@ and scan_tokens (tok : tokenizer) : tokenizer =
   | Some c, _ when is_digit c -> read_number tok "" false
   | Some c, _ when is_alpha c -> read_identifier tok ""
   | Some c, rest ->
-      "Unkown character <" ^ Astring.String.of_char c ^ "> at "
-      ^ Astring.String.of_int tok.line
-      |> add_error tok rest
+      let err =
+        Printf.sprintf "[line %d] Error: Unexpected character: %s" tok.line
+          (Astring.String.of_char c)
+      in
+      (* Print the error and log it *)
+      (* Printf.printf "%s\n" err; *)
+      add_error tok rest err
 
 let tokenize (str : string) : tokenizer =
   { source = str; tokens = []; errors = []; line = 1 } |> scan_tokens
