@@ -50,7 +50,11 @@ let server_handler _conn req body =
         `String (Printf.sprintf "Hello, %s!" name)
     | "/olox" ->
         let toks = Olox.tokenize body_str in
-        let ast = Olox.parse toks.tokens in
+        let ast =
+          match Olox.parse toks.tokens with
+          | Error s -> s
+          | Ok ast -> ast |> Olox.ast_to_string
+        in
         let resp =
           `Assoc
             [
